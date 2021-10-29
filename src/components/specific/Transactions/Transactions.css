@@ -1,0 +1,8 @@
+.transactions{
+    grid-column: 1 / span 1;
+    grid-row: 1;
+    border-right: 5px solid rgb(6, 127, 226);
+    height: 100vh;
+    overflow-y: scroll;
+    padding-left: 50px;
+}

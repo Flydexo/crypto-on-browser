@@ -1,0 +1,36 @@
+.send{
+    /* grid-column: 2; */
+    grid-row: 1;
+    height: 10vh;
+    width: 70%;
+    align-self: flex-start;
+    background: rgb(6, 127, 226);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    justify-self: center;
+    margin-top: 100px;
+    padding: 0px 20px;
+    font-weight: bold;
+    font-size: 24px;
+}
+.send > div:first-child{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 60%;
+}
+
+.send > div:nth-child(2){
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 40%;
+}
+
+.send input{
+    border: none;
+    border-radius: 10px;
+    width: 200px;
+}

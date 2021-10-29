@@ -1,0 +1,19 @@
+.transaction{
+    width: 90%;
+    background-color: rgb(65, 65, 224);
+    border-radius: 10px;
+    height: 70px;
+    color: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.transaction.withdraw{
+    background-color: red;
+}
+
+.transaction.deposit{
+    background-color: green;
+}

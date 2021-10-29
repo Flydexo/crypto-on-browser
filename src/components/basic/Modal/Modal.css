@@ -1,0 +1,35 @@
+.modal{
+    width: 40%;
+    height: 40vh;
+    border-radius: 10px;
+    z-index: 10;
+    position: absolute;
+    left: calc((100% - 40%) / 2);
+    top: calc((100vh - 40vh) / 2);
+    background-color: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    padding: 50px 0;
+}
+.background{
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.50);
+    position: absolute;
+    z-index: 9;
+}
+
+@media screen and (max-width: 450px){
+    .modal{
+        width: 80%;
+        left: calc((100% - 80%) / 2);
+    }
+}
+
+@media screen and (max-width: 280px){
+    .modal h1{
+        font-size: 24px;
+    }
+}
