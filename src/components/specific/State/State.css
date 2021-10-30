@@ -1,22 +1,24 @@
-.state{
+.global.state{
     display: flex;
     justify-content: space-around;
     align-items: center;
+    font-size: 24px;
 }
-.state > p{
+.global.state > p{
     font-weight: bold;
 }
-.state.big{
+.global.state.big{
     width: 137px;
 }
-.state.dark > p{
+.global.state.dark > p{
     color: var(--black);
 }
-.state.MINING img{
+.global.state.MINING img{
     animation: mine 1s linear 0.2s infinite normal none;
 }
-.state.WAITING img{
+.global.state.WAITING img{
     animation: waiting 2s linear 0.2s infinite normal none;
+    margin-right: 10px;
 }
 
 @keyframes mine {

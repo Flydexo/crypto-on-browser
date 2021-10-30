@@ -50,7 +50,103 @@ export default function App() {
                     <div className="app">
                         {modalOpened ? <Modal title="SIGN IN" description="Enter a username" value={userName} button="LOGIN" placeholder="Your username" setValue={setUserName} onClick={() => setModalOpened(false)}/> : null}
                         <div className="left">
-                            <Transactions transactions={transactions}/>
+                            <Transactions transactions={[{from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "PENDING"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {to: "hfuheffhe", from: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "PENDING"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {to: "hfuheffhe", from: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "PENDING"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {to: "hfuheffhe", from: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "PENDING"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {to: "hfuheffhe", from: `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
+cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
+LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
+4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
+J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
+yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
+PwIDAQAB
+-----END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}]}/>
                         </div>
                         <div className="mid">
                             <Nav/>
