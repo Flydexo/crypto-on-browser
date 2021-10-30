@@ -1,0 +1,29 @@
+.block.MINING{
+    background-color: var(--yellow);
+}
+.block.CHAINED{
+    background-color: var(--cyan);
+}
+.block{
+    width: 582px;
+    height: 108px;
+    color: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 17px;
+    margin: 10px 0;
+}
+.block .infos{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 60%;
+}
+.block .infos .time{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row-reverse;
+    width: 70px;
+}

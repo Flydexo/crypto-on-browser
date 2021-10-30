@@ -1,0 +1,44 @@
+.state{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.state > p{
+    font-weight: bold;
+}
+.state.big{
+    width: 137px;
+}
+.state.dark > p{
+    color: var(--black);
+}
+.state.MINING img{
+    animation: mine 1s linear 0.2s infinite normal none;
+}
+.state.WAITING img{
+    animation: waiting 2s linear 0.2s infinite normal none;
+}
+
+@keyframes mine {
+    0%{
+        transform: rotate(41deg);
+    }
+    50%{
+        transform: rotate(-43deg);
+    }
+    100%{
+        transform: rotate(41deg);
+    }
+}
+
+@keyframes waiting {
+    0%{
+        transform: rotate(0deg);
+    }
+    50%{
+        transform: rotate(179deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}

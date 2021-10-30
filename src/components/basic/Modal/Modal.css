@@ -1,17 +1,25 @@
 .modal{
-    width: 40%;
-    height: 40vh;
-    border-radius: 10px;
+    width: 632px;
+    height: 350px;
+    border-radius: 21px;
     z-index: 10;
     position: absolute;
-    left: calc((100% - 40%) / 2);
-    top: calc((100vh - 40vh) / 2);
+    left: calc((100% - 632px) / 2);
+    top: calc((100vh - 350px) / 2);
     background-color: #fff;
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
     padding: 50px 0;
+    color: var(--black);
+}
+.modal h1{
+    font-size: 36px;
+}
+.modal p{
+    color: var(--black);
+    font-size: 18px;
 }
 .background{
     width: 100%;
