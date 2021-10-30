@@ -1,7 +1,7 @@
 import blockchain, { sendToPeers, wallet } from "../../blockchain";
 import Transaction from "./Transaction";
 import Block from "./Block"
-import {socket } from "../../blockchain";
+import {socket} from "../../blockchain";
 const events = require("events")
 
 export default class Blockchain{
@@ -9,6 +9,11 @@ export default class Blockchain{
         this.chain = chain;
         this.pendingTransactions = pendingTransactions;
         this.events = new events.EventEmitter();
+        this.lastTransactionId = this.chain.length >= 1 ? this.chain[this.chain.length - 1].transactions[this.chain[this.chain.length - 1].transactions.length - 1].id : 0;
+    }
+
+    getNewTransactionId(){
+        return this.lastTransactionId+this.pendingTransactions.length+1;
     }
 
     getLastBlock(){
@@ -16,7 +21,6 @@ export default class Blockchain{
     }
 
     addTransaction(transaction, miner){
-        console.log(this.pendingTransactions.map(tx => tx.amount))
         if(transaction.verify(this)){
             this.pendingTransactions.push(transaction);
             this.events.emit("tx", transaction);
@@ -28,14 +32,12 @@ export default class Blockchain{
                 sendToPeers("transaction", transaction)
             }
             if(this.pendingTransactions.length >= 3){
-                console.log("length > 3")
                 this.addBlock(this.pendingTransactions, miner);
             }
         }
     }
 
     addBlock(pendingTransactions, miner){
-        console.log("add Block")
         let isValid = true;
         pendingTransactions.forEach(tx => {
             if(!tx.verify(this)){
@@ -50,21 +52,19 @@ export default class Blockchain{
                 this.chain.push(block);
                 this.events.emit("block", block);
                 sendToPeers("block", block)
-                this.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
+                this.addTransaction(new Transaction("system", wallet.publicKey, 10, this.getNewTransactionId()), wallet.publicKey)
             }else{
                 const block = new Block(this.chain.length, this.chain[this.chain.length - 1].hash, pendingTransactions);
                 block.mine(Math.round(Math.random()*9999999), miner, this);
+                this.lastTransactionId = pendingTransactions[pendingTransactions.length - 1].id;
                 this.pendingTransactions = [];
                 this.chain.push(block);
                 this.events.emit("block", block);
                 sendToPeers("block", block)
                 // socket.emit("block", blockchain.chain);
-                this.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
+                this.addTransaction(new Transaction("system", wallet.publicKey, 10, this.getNewTransactionId()), wallet.publicKey)
             }
-        }else{
-            console.log("not valid")
         }
-        console.log(this)
         return 
     }
 

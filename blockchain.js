@@ -13,13 +13,12 @@ let connections = new Map();
 let sockets = [];
 
 export const sendMoney = (toPublicKey, amount) => {
-    const transaction = new Transaction(wallet.publicKey, toPublicKey, amount);
+    const transaction = new Transaction(wallet.publicKey, toPublicKey, amount, blockchain.getNewTransactionId());
     wallet.signTransaction(transaction);
     blockchain.addTransaction(transaction, wallet.publicKey);
 }
 
 export const sendToPeers = (type, data) => {
-    console.log("send to peers")
     const str = JSON.stringify({type: type, data: data});
     connections.forEach(c => {
         c.channel.send(str)
@@ -105,7 +104,7 @@ export const wallet = new Wallet(atob(location.hash.split("#")[1]));
 // blockchain.addTransaction(transaction)
 
 function handleTransaction(message){
-    const tx = new Transaction(message.data.from, message.data.to, message.data.amount);
+    const tx = new Transaction(message.data.from, message.data.to, message.data.amount, blockchain.getNewTransactionId());
     if(tx.from !== "system"){
         tx.sign(message.data.signature.data)
     }
@@ -117,7 +116,6 @@ function handleTransaction(message){
 }
 
 function handleBlock(message){
-    console.log("handleBlock")
     if(message.data.hash.substr(0, 4) === "0000"){
         if(message.data.id == blockchain.getLastBlock().id){
             if(message.data.timestamp > blockchain.getLastBlock().timestamp){

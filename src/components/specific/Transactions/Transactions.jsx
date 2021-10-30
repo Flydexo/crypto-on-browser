@@ -22,7 +22,7 @@ export default function Transactions({transactions}) {
                                 name = addr.name;
                             }
                         })
-                        return <Transaction type="withdraw" state={tx.state} amount={tx.amount} other={name} key={i}/>
+                        return <Transaction type="withdraw" state={tx.state} amount={tx.amount} other={name} key={i} id={tx.id}/>
                     }else if(tx.to === wallet.publicKey){
                         if(tx.from != "system"){
                             stateAddresses.forEach(addr => {
@@ -33,7 +33,7 @@ export default function Transactions({transactions}) {
                         }else{
                             name = "system"
                         }
-                        return <Transaction type="deposit" state={tx.state} amount={tx.amount} other={name} key={i}/>
+                        return <Transaction type="deposit" state={tx.state} amount={tx.amount} other={name} key={i} id={tx.id}/>
                     }
                 })
             }

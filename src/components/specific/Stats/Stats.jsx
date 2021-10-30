@@ -2,12 +2,12 @@ import React from 'react'
 import State from '../State/State'
 import "./Stats.css"
 
-export default function Stats({lastblock, waitingTxns, nodes, transactions, supply, blockTime}) {
+export default function Stats({lastblock, waitingTxns, nodes, transactions, supply, blockTime, state}) {
     return (
         <div className="stats">
-            <div className="stats-state"><State type="WAITING" size="big" color="dark"/></div>
+            <div className="stats-state"><State type={state} size="big" color="dark"/></div>
             <div className="main">
-                <p>lastblock: {lastblock}</p>
+                <p>last block: {lastblock}</p>
                 <p>waiting txns: {waitingTxns}</p>
                 <p>nodes: {nodes}</p>
             </div>

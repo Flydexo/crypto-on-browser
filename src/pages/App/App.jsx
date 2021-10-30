@@ -16,20 +16,46 @@ export default function App() {
     const [modalOpened, setModalOpened] = useState(true);
     const [balance, setBalance] = useState(0);
     const [transactions, setTransactions] = useState([]);
+    const [stats, setStats] = useState({
+        blockTime: "0s",
+        lastBlockId: 0,
+        transactions: 0,
+        supply: 0,
+        waitingTxns: 0,
+        nodes: 0,
+        state: "WAITING"
+    });
     
     useEffect(() => {
         if(modalOpened === false){
             init(userName).then((blockchain) => {
+                let pendingTransactions = [];
                 setBalance(wallet.getBalance(blockchain))
 
-                blockchain.events.on("block", () => {
+                blockchain.events.on("block", block => {
+                    block.transactions.forEach(tx => {
+                        pendingTransactions.forEach((otx, i) => {
+                            if(otx.id === tx.id){
+                                pendingTransactions[i].state = "VALIDATED";
+                                setTransactions(pendingTransactions)
+                            }
+                        })
+                    })
                     setBalance(wallet.getBalance(blockchain))
                 })
-                let pendingTransactions = [];
                 blockchain.events.on("tx", (tx) => {
+                    tx = {...tx, state: "PENDING"}
                     pendingTransactions = [...pendingTransactions, tx];
+                    pendingTransactions = pendingTransactions.sort((a,b) => {
+                        if(a.id > b.id){
+                            return 1
+                        }else{
+                            return -1
+                        }
+                    })
                     setTransactions(pendingTransactions);
                     setBalance(wallet.getBalance(blockchain))
+                    console.log(pendingTransactions.map(tx => tx.id))
                 })
                 blockchain.events.on("initWallet", (localBalance) => {
                     setBalance(localBalance)
@@ -50,109 +76,13 @@ export default function App() {
                     <div className="app">
                         {modalOpened ? <Modal title="SIGN IN" description="Enter a username" value={userName} button="LOGIN" placeholder="Your username" setValue={setUserName} onClick={() => setModalOpened(false)}/> : null}
                         <div className="left">
-                            <Transactions transactions={[{from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "PENDING"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {to: "hfuheffhe", from: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "PENDING"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {to: "hfuheffhe", from: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "PENDING"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {to: "hfuheffhe", from: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "PENDING"}, {from: "hfuheffhe", to: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}, {to: "hfuheffhe", from: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8SMYHS5vZcKeu5lmApn
-cQWpTB8bCMMIK2Sh0i5EIlA9OOC4FBB0UR13hk6vsIBQGQdtpXQzLKoh/s6Kb2jF
-LcFX+bxg97XXdjpeKevwhz4MlGV68GggQHwCstL2FCnfKAOY/OWySRE4GOeSvhRF
-4JnHwLNs+kxdHAN23KSdldyiBumGZW5uG4OeIdhaAHHl5nAs2J2mNXVzY/fUDN/v
-J+BskOKorpdzPMs2pxwSW2GlbNWmH1Ij8m21NNZtkfcrY4+4dWqHPgYZS574nc1p
-yDpXwdRTRy6+4Hx9HezAI2p5JfrHykmEYVr34CQLAh6MeONnTXxWAiZN/eOfoQ8p
-PwIDAQAB
------END PUBLIC KEY-----`, amount: 10, state: "VALIDATED"}]}/>
+                            <Transactions transactions={transactions}/>
                         </div>
                         <div className="mid">
                             <Nav/>
                             <Send/>
-                            <Stats lastblock="bx5" waitingTxns={10} nodes={84} transactions={842} supply={100000000} blockTime="0.25s"/>
-                            <Blocks blocks={[{state: "MINING", id: "bx1", miner: "lol", transactions: Array(5), timestamp: 1633365700000}, {state: "CHAINED", id: "bx1", miner: "lol", transactions: Array(5), timestamp: 1633365700000}, {state: "CHAINED", id: "bx1", miner: "lol", transactions: Array(5), timestamp: 1633365700000}, {state: "CHAINED", id: "bx1", miner: "lol", transactions: Array(5), timestamp: 1633365700000}]}/>
+                            <Stats state={stats.state} lastblock={`bx${stats.lastBlockId}`} waitingTxns={stats.waitingTxns} nodes={stats.nodes} transactions={stats.transactions} supply={stats.supply} blockTime={stats.blockTime}/>
+                            <Blocks/>
                         </div>
                         <div className="right">
                             <Profile username={userName} address={wallet.publicKey} balance={balance}/>

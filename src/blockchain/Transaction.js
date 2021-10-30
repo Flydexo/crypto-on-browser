@@ -1,11 +1,12 @@
 const NodeRSA = require("node-rsa");
 
 module.exports = class Transaction{
-    constructor(from, to, amount){
+    constructor(from, to, amount, id){
         this.from = from;
         this.to = to;
         this.amount = amount;
         this.signature;
+        this.id = id;
     }
 
     verify(blockchain){
