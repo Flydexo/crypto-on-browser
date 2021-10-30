@@ -9,10 +9,6 @@ export let addresses = [];
 export let socket = io.io("http://localhost:3000");
 export const addressesEvent = new events.EventEmitter();
 export let blockchain = new Blockchain();
-export const worker = new Worker(
-    new URL('./worker.js', import.meta.url),
-    {type: 'module'}
-);
 let connections = new Map();
 let sockets = [];
 
@@ -125,8 +121,8 @@ function handleBlock(message){
     if(message.data.hash.substr(0, 4) === "0000"){
         if(message.data.id == blockchain.getLastBlock().id){
             if(message.data.timestamp > blockchain.getLastBlock().timestamp){
-                socket.emit("block", blockchain.chain);
-                blockchain.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
+                // socket.emit("block", blockchain.chain);
+                // blockchain.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
             }else{
                 blockchain.chain.pop()
                 for(let i = 0; i<blockchain.pendingTransactions.length; i++){
@@ -147,7 +143,6 @@ function handleBlock(message){
 }
 
 function createBlock(message){
-    // worker.terminate();
     const block = new Block(message.data.id, message.data.prevHash, message.data.transactions);
     block.hash = message.data.hash;
     block.nonce = message.data.nonce;

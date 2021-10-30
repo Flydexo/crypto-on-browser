@@ -1,7 +1,7 @@
 import blockchain, { sendToPeers, wallet } from "../../blockchain";
 import Transaction from "./Transaction";
 import Block from "./Block"
-import { worker, socket } from "../../blockchain";
+import {socket } from "../../blockchain";
 const events = require("events")
 
 export default class Blockchain{
@@ -16,6 +16,7 @@ export default class Blockchain{
     }
 
     addTransaction(transaction, miner){
+        console.log(this.pendingTransactions.map(tx => tx.amount))
         if(transaction.verify(this)){
             this.pendingTransactions.push(transaction);
             this.events.emit("tx", transaction);
@@ -45,44 +46,25 @@ export default class Blockchain{
             if(this.chain.length < 1){
                 const block = new Block(this.chain.length, "", pendingTransactions);
                 block.mine(Math.round(Math.random()*9999999), miner, this);
-                worker.onmessage = (e) => {
-                    if(e.data.type == "block:mined"){
-                        block.timestamp = e.data.data.timestamp;
-                        block.nonce = e.data.data.nonce;
-                        block.hash = e.data.data.hash;
-                        block.miner = e.data.data.miner;
-                        this.pendingTransactions = [];
-                        this.chain.push(block);
-                        this.events.emit("block", block);
-                        sendToPeers("block", block)
-                        this.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
-                    }
-                }
+                this.pendingTransactions = [];
+                this.chain.push(block);
+                this.events.emit("block", block);
+                sendToPeers("block", block)
+                this.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
             }else{
                 const block = new Block(this.chain.length, this.chain[this.chain.length - 1].hash, pendingTransactions);
-                block.mine(Math.round(Math.random()*9999999), miner, this)
-                worker.onmessage = (e) => {
-                    if(e.data.type == "block:mined"){
-                        console.log("block mined")
-                        block.timestamp = e.data.data.timestamp;
-                        block.nonce = e.data.data.nonce;
-                        block.hash = e.data.data.hash;
-                        block.miner = e.data.data.miner;
-                        console.log(this.chain.map(c => [c.transactions.map(tx => {
-                            return {type: tx.from == wallet.publicKey ? "withdraw" : "deposit", amount: tx.amount, other: tx.from == wallet.publicKey ? tx.to === "system" ? "system" : "unknown" : tx.from === "system" ? "system" : "unknown"}
-                        })]))
-                        this.pendingTransactions = [];
-                        this.chain.push(block);
-                        this.events.emit("block", block);
-                        sendToPeers("block", block)
-                        socket.emit("block", blockchain.chain);
-                        this.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
-                    }
-                }
+                block.mine(Math.round(Math.random()*9999999), miner, this);
+                this.pendingTransactions = [];
+                this.chain.push(block);
+                this.events.emit("block", block);
+                sendToPeers("block", block)
+                // socket.emit("block", blockchain.chain);
+                this.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
             }
         }else{
             console.log("not valid")
         }
+        console.log(this)
         return 
     }
 

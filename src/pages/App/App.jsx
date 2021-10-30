@@ -26,6 +26,7 @@ export default function App() {
                 blockchain.events.on("tx", (tx) => {
                     pendingTransactions = [...pendingTransactions, tx];
                     setTransactions(pendingTransactions);
+                    setBalance(wallet.getBalance(blockchain))
                 })
                 blockchain.events.on("initWallet", (localBalance) => {
                     setBalance(localBalance)
