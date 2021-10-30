@@ -29,7 +29,6 @@ body{
     display: grid;
     grid-template-columns: 1fr 1.5fr 1fr;
     justify-items: stretch;
-    align-items: center;
 }
 
 @media screen and (max-width: 1200px){
