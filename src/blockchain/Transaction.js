@@ -10,6 +10,14 @@ module.exports = class Transaction{
     }
 
     verify(blockchain){
+        if(this.amount <= 0){
+            console.log("error: amount cannot be zero");
+            return false;
+        }
+        if(this.from === this.to){
+            console.log("error: same sender and reciever")
+            return false;
+        }
         if(this.from === "system"){
             return true;
         }else{

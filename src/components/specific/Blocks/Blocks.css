@@ -1,4 +1,5 @@
 .blocks{
     overflow-y: scroll;
     height: 40vh;
+    min-width: 590px;
 }
