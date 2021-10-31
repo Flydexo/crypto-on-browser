@@ -1,14 +1,23 @@
 const NodeRSA = require("node-rsa");
 
 module.exports = class Transaction{
-    constructor(from, to, amount){
+    constructor(from, to, amount, id){
         this.from = from;
         this.to = to;
         this.amount = amount;
         this.signature;
+        this.id = id;
     }
 
     verify(blockchain){
+        if(this.amount <= 0){
+            console.log("error: amount cannot be zero");
+            return false;
+        }
+        if(this.from === this.to){
+            console.log("error: same sender and reciever")
+            return false;
+        }
         if(this.from === "system"){
             return true;
         }else{
@@ -54,5 +63,10 @@ module.exports = class Transaction{
 
     toString(){
         return JSON.stringify({from: this.from, to: this.to, amount: this.amount})
+    }
+
+    isInBlock(blockchain){
+        if(blockchain.lastTransactionId >= this.id) return true
+        return false
     }
 }

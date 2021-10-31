@@ -1,0 +1,16 @@
+.animation{
+    width: 50px;
+    display: flex;
+    align-items: center;
+}
+.circle{
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 100%;
+    margin: 0 2px;
+}
+.animation.little .circle{
+    width: 5px;
+    height: 5px;
+}

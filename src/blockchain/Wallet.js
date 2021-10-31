@@ -19,21 +19,17 @@ export default class Wallet{
         blockchain.chain.forEach(block => {
             block.transactions.filter(tx => tx.from == this.publicKey || tx.to == this.publicKey).forEach(tx => {
                 if(tx.from == this.publicKey){
-                    console.log("-", tx.amount)
                     balance -= tx.amount;
                 }else if(tx.to == this.publicKey){
-                    console.log("+", tx.amount)
                     balance += tx.amount;
                 }
             })
         })
-        // blockchain.pendingTransactions.filter(tx => tx.from == this.publicKey || tx.to == this.publicKey).forEach(tx => {
-        //     if(tx.from == this.publicKey){
-        //         balance -= tx.amount;
-        //     }else if(tx.to == this.publicKey){
-        //         balance += tx.amount;
-        //     }
-        // })
+        blockchain.pendingTransactions.filter(tx => tx.from == this.publicKey || tx.to == this.publicKey).forEach(tx => {
+            if(tx.from == this.publicKey){
+                balance -= tx.amount;
+            }
+        })
         return balance
     }
 }

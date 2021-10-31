@@ -1,36 +1,53 @@
 .send{
-    /* grid-column: 2; */
-    grid-row: 1;
-    height: 10vh;
-    width: 70%;
-    align-self: flex-start;
-    background: rgb(6, 127, 226);
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    justify-self: center;
-    margin-top: 100px;
-    padding: 0px 20px;
-    font-weight: bold;
-    font-size: 24px;
-}
-.send > div:first-child{
+    background-color: var(--bg-blue);
+    width: 682px;
+    height: 157px;
+    border-radius: 27px;
+    color: #ffffff;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 60%;
 }
 
-.send > div:nth-child(2){
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 40%;
+input#amount[type=number]::-webkit-inner-spin-button {
+    display: none;
 }
 
-.send input{
+#amount{
+    outline: none;
     border: none;
-    border-radius: 10px;
-    width: 200px;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0);
+    margin-right: 10px;
+    width: 1ch;
+}
+
+#amount,
+.currency{
+    font-size: 48px;
+}
+
+.amount-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.to{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+.to > span{
+    font-size: 18px;
+    font-weight: bold;
+}
+.to > select{
+    width: 110px;
+    outline: none;
+    border: 1px solid var(--blue);
+}
+
+.to > select > option{
+    border: 0px 1px 0px 1px solid var(--blue);
 }

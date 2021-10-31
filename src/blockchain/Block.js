@@ -1,6 +1,6 @@
 const crypto = require("crypto-js");
 const Transaction = require("./Transaction");
-import {worker} from "../../blockchain"
+import { worker } from "../../blockchain";
 
 export default class Block{
     constructor(id, prevHash = "", transactions){
@@ -20,7 +20,7 @@ export default class Block{
 
     // mine(nonce, miner, blockchain){
     //     this.miner = miner;
-    //     console.log("Starting to mine ⛏")
+    //     console.log("Starting to mine ⛏", blockchain.pendingTransactions)
     //     let success = false;
     //     let solution = 0;
     //     while(!success){
@@ -41,7 +41,6 @@ export default class Block{
     // }
 
     mine(nonce, miner, blockchain){
-        console.log("worker start")
         worker.postMessage({type: "mine", data: {nonce, miner, blockchain: JSON.parse(JSON.stringify(blockchain)), block: JSON.parse(JSON.stringify(this))}})
     }
 

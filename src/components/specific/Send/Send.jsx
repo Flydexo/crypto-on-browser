@@ -26,22 +26,39 @@ export default function Send() {
 
     return (
         <div className="send">
-            <div>
-                Send 
-                <input type="number" min="0" value={amount} onChange={e => setAmount(e.target.value)}/>
-                SEV
-            </div>
-            <div>
-                to
-                <select onChange={e => handleChange(e)} defaultValue={to}>
-                    {stateAddresses ? stateAddresses.map((a) => {
-                        if(a.key){
-                            return <option value={a.key} key={a.key}>{a.name}</option>;
+            <div className="amount-container">
+                <input type="number" name="amount" id="amount" value={amount} onChange={e => {
+                    if(e.target.value.startsWith("0") && e.target.value.length > 1){
+                        let numbers = e.target.value.split("");
+                        let i = 0;
+                        for(i; i<numbers.length; i++){
+                            if(numbers[i] != 0){
+                                break;
+                            }
                         }
-                    }) : null}
+                        setAmount(e.target.value.substring(i))
+                    }else if(e.target.value == ""){
+                        setAmount(0)
+                    }else if(e.target.value >= 0){
+                        setAmount(e.target.value)
+                    }else{
+                        setAmount(0)
+                    }
+                    
+                }} style={{width: `${amount.length}ch`}}/>
+                <span className="currency">SVC</span>
+            </div>
+            <div className="to">
+                <span>to</span>
+                <select name="users" id="users" onChange={e => handleChange(e)}>
+                    {
+                        stateAddresses.map(addr => {
+                            return <option key={addr.key} value={addr.key}>{addr.name}</option>
+                        })
+                    }
                 </select>
             </div>
-            <Button title="send" onClick={() => handleSend()}/>
+            <Button title="PAY" onClick={handleSend}/>
         </div>
     )
 }

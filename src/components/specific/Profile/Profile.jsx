@@ -11,11 +11,11 @@ export default function Profile({username, balance, address}) {
             <div className="username">
                 {username}
             </div>
-            <div className="balance">
-                {balance} SEV
-            </div>
             <div className="address">
                 <Address>{address}</Address>
+            </div>
+            <div className="balance">
+                {balance} SVC
             </div>
         </div>
     )
