@@ -6,7 +6,7 @@ import Block from "./src/blockchain/Block";
 import { SHA256 } from "crypto-js";
 const io = require("socket.io-client");
 export let addresses = [];
-export let socket = io.io("http://localhost:3000");
+export let socket = io.io("https://sevcoin.herokuapp.com");
 export const addressesEvent = new events.EventEmitter();
 export let blockchain = new Blockchain();
 export let worker = new Worker(

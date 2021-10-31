@@ -3,3 +3,4 @@ dist
 node_modules
 manage
 package-lock.json
+.cache
