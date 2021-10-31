@@ -34,6 +34,8 @@ export default function Transactions({transactions}) {
                             name = "system"
                         }
                         return <Transaction type="deposit" state={tx.state} amount={tx.amount} other={name} key={i} id={tx.id}/>
+                    }else{
+                        return null
                     }
                 })
             }

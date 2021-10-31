@@ -9,8 +9,29 @@ export let addresses = [];
 export let socket = io.io("http://localhost:3000");
 export const addressesEvent = new events.EventEmitter();
 export let blockchain = new Blockchain();
+export let worker = new Worker(
+    new URL('./worker.js', import.meta.url),
+    {type: 'module'}
+);
+export let users = [];
 let connections = new Map();
 let sockets = [];
+
+socket.on("address", addresses => {
+    users = addresses;
+})
+
+export const getUsername = (publicKey) => {
+    console.log(publicKey)
+    let username = "unknown";
+    users.forEach(addr => {
+        console.log(addr.name, addr.key == publicKey)
+        if(addr.key === publicKey){
+            username = addr.name;
+        }
+    })
+    return username;
+}
 
 export const sendMoney = (toPublicKey, amount) => {
     const transaction = new Transaction(wallet.publicKey, toPublicKey, amount, blockchain.getNewTransactionId());
@@ -99,6 +120,11 @@ export default (username) => {
 }
 
 export const wallet = new Wallet(atob(location.hash.split("#")[1]));
+
+export const isConcernedByTransaction = (publicKey, transaction) => {
+    if(transaction.from === publicKey || transaction.to === publicKey) return true
+    return false
+}
 // const transaction = new Transaction("system", wallet.publicKey, 100);
 // wallet.signTransaction(transaction)
 // blockchain.addTransaction(transaction)
@@ -108,33 +134,45 @@ function handleTransaction(message){
     if(tx.from !== "system"){
         tx.sign(message.data.signature.data)
     }
-    blockchain.pendingTransactions.push(tx)
-    if(blockchain.pendingTransactions.length >= 3){
-        blockchain.addBlock(blockchain.pendingTransactions, wallet.publicKey)
+    if(tx.from == "system" && tx.to != wallet.publicKey && blockchain.getLastBlock().miner != tx.to){
+        return
+    }else{
+        blockchain.pendingTransactions.push(tx)
+        if(blockchain.pendingTransactions.length >= 3){
+            blockchain.addBlock(blockchain.pendingTransactions, wallet.publicKey)
+        }
+        blockchain.events.emit("tx", tx)
     }
-    blockchain.events.emit("tx", tx)
 }
 
 function handleBlock(message){
     if(message.data.hash.substr(0, 4) === "0000"){
-        if(message.data.id == blockchain.getLastBlock().id){
-            if(message.data.timestamp > blockchain.getLastBlock().timestamp){
-                // socket.emit("block", blockchain.chain);
-                // blockchain.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
-            }else{
-                blockchain.chain.pop()
-                for(let i = 0; i<blockchain.pendingTransactions.length; i++){
-                    let p = blockchain.pendingTransactions[i];
-                    if(p.from === "system" && p.to === wallet.publicKey){
-                        blockchain.pendingTransactions.splice(i, 1)
-                        i = i--;
-                    }
-                }
-                createBlock(message)
-            }
-        }else{
+        if(message.data.id == blockchain.getLastBlock().id + 1){
+            worker.terminate()
+            worker = new Worker(
+                new URL('./worker.js', import.meta.url),
+                {type: 'module'}
+            )
             createBlock(message)
-        } 
+        }
+        // if(message.data.id == blockchain.getLastBlock().id){
+        //     if(message.data.timestamp > blockchain.getLastBlock().timestamp){
+        //         // socket.emit("block", blockchain.chain);
+        //         // blockchain.addTransaction(new Transaction("system", wallet.publicKey, 10), wallet.publicKey)
+        //     }else{
+        //         blockchain.chain.pop()
+        //         for(let i = 0; i<blockchain.pendingTransactions.length; i++){
+        //             let p = blockchain.pendingTransactions[i];
+        //             if(p.from === "system" && p.to === wallet.publicKey){
+        //                 blockchain.pendingTransactions.splice(i, 1)
+        //                 i = i--;
+        //             }
+        //         }
+        //         createBlock(message)
+        //     }
+        // }else{
+        //     createBlock(message)
+        // } 
     }else{
         alert("Mining not completed")
     }
@@ -149,9 +187,11 @@ function createBlock(message){
         block.transactions[i].signature = tx.signature
     })
     block.createHash();
+    block.miner = message.data.miner;
     if(block.hash == message.data.hash){
             // if(block.hasValidTransactions(blockchain)){
         blockchain.chain.push(block);
+        blockchain.setLastTransactionId();
             // }else{
             //     alert("invalid transactions")
             // }

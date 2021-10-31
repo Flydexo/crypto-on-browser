@@ -1,4 +1,4 @@
-import blockchain, { sendToPeers, wallet } from "../../blockchain";
+import blockchain, { sendToPeers, wallet, worker } from "../../blockchain";
 import Transaction from "./Transaction";
 import Block from "./Block"
 import {socket} from "../../blockchain";
@@ -10,6 +10,10 @@ export default class Blockchain{
         this.pendingTransactions = pendingTransactions;
         this.events = new events.EventEmitter();
         this.lastTransactionId = this.chain.length >= 1 ? this.chain[this.chain.length - 1].transactions[this.chain[this.chain.length - 1].transactions.length - 1].id : 0;
+    }
+
+    setLastTransactionId(){
+        this.lastTransactionId =  this.chain.length >= 1 ? this.chain[this.chain.length - 1].transactions[this.chain[this.chain.length - 1].transactions.length - 1].id : 0;
     }
 
     getNewTransactionId(){
@@ -24,13 +28,7 @@ export default class Blockchain{
         if(transaction.verify(this)){
             this.pendingTransactions.push(transaction);
             this.events.emit("tx", transaction);
-            if(transaction.from == "system" && transaction.to == miner){
-                if(this.getLastBlock().miner == miner){
-                    sendToPeers("transaction", transaction)
-                }
-            }else{
-                sendToPeers("transaction", transaction)
-            }
+            sendToPeers("transaction", transaction)
             if(this.pendingTransactions.length >= 3){
                 this.addBlock(this.pendingTransactions, miner);
             }
@@ -48,21 +46,29 @@ export default class Blockchain{
             if(this.chain.length < 1){
                 const block = new Block(this.chain.length, "", pendingTransactions);
                 block.mine(Math.round(Math.random()*9999999), miner, this);
+                this.events.emit("mining", block);
                 this.pendingTransactions = [];
                 this.chain.push(block);
                 this.events.emit("block", block);
                 sendToPeers("block", block)
-                this.addTransaction(new Transaction("system", wallet.publicKey, 10, this.getNewTransactionId()), wallet.publicKey)
+                this.addTransaction(new Transaction("system", wallet.publicKey, 10, this.getNewTransactionId()), wallet.publicKey, this.getNewTransactionId())
             }else{
+                this.pendingTransactions = [];
                 const block = new Block(this.chain.length, this.chain[this.chain.length - 1].hash, pendingTransactions);
                 block.mine(Math.round(Math.random()*9999999), miner, this);
-                this.lastTransactionId = pendingTransactions[pendingTransactions.length - 1].id;
-                this.pendingTransactions = [];
-                this.chain.push(block);
-                this.events.emit("block", block);
-                sendToPeers("block", block)
-                // socket.emit("block", blockchain.chain);
-                this.addTransaction(new Transaction("system", wallet.publicKey, 10, this.getNewTransactionId()), wallet.publicKey)
+                this.events.emit("mining", block);
+                worker.onmessage = (e) => {
+                    const {type, data} = e.data;
+                    if(this.getLastBlock().id < data.id){
+                        this.lastTransactionId = pendingTransactions[pendingTransactions.length - 1].id;
+                        this.pendingTransactions = [];
+                        this.chain.push(data);
+                        this.events.emit("block", data);
+                        sendToPeers("block", data)
+                        // socket.emit("block", blockchain.chain);
+                        this.addTransaction(new Transaction("system", wallet.publicKey, 10, this.getNewTransactionId()), wallet.publicKey, this.getNewTransactionId())
+                    }
+                }
             }
         }
         return 

@@ -56,4 +56,9 @@ module.exports = class Transaction{
     toString(){
         return JSON.stringify({from: this.from, to: this.to, amount: this.amount})
     }
+
+    isInBlock(blockchain){
+        if(blockchain.lastTransactionId >= this.id) return true
+        return false
+    }
 }

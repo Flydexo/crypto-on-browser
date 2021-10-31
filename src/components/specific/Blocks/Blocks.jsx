@@ -1,5 +1,6 @@
 import React from 'react'
 import Block from './Block/Block'
+import "./Blocks.css"
 /**
  * limited to 6 blocks
  */

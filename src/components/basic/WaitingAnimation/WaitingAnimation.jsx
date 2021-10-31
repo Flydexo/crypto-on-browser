@@ -28,8 +28,8 @@ export default function WaitingAnimation({size}) {
     return (
         <div className={`animation ${size}`}>
             {
-                dots.map(() => {
-                    return <div className="circle"></div>
+                dots.map((d, i) => {
+                    return <div className="circle" key={i}></div>
                 })
             }
         </div>

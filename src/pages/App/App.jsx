@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import init, {wallet} from '../../../blockchain';
+import init, {isConcernedByTransaction, wallet} from '../../../blockchain';
 import Modal from '../../components/basic/Modal/Modal';
 import Profile from '../../components/specific/Profile/Profile';
 import Transactions from '../../components/specific/Transactions/Transactions';
@@ -16,6 +16,7 @@ export default function App() {
     const [modalOpened, setModalOpened] = useState(true);
     const [balance, setBalance] = useState(0);
     const [transactions, setTransactions] = useState([]);
+    const [blocks, setBlocks] = useState()
     const [stats, setStats] = useState({
         blockTime: "0s",
         lastBlockId: 0,
@@ -25,37 +26,51 @@ export default function App() {
         nodes: 0,
         state: "WAITING"
     });
+
     
     useEffect(() => {
         if(modalOpened === false){
             init(userName).then((blockchain) => {
                 let pendingTransactions = [];
+                let pendingBlocks = [];
                 setBalance(wallet.getBalance(blockchain))
-
                 blockchain.events.on("block", block => {
-                    block.transactions.forEach(tx => {
-                        pendingTransactions.forEach((otx, i) => {
-                            if(otx.id === tx.id){
-                                pendingTransactions[i].state = "VALIDATED";
-                                setTransactions(pendingTransactions)
-                            }
-                        })
-                    })
-                    setBalance(wallet.getBalance(blockchain))
-                })
-                blockchain.events.on("tx", (tx) => {
-                    tx = {...tx, state: "PENDING"}
-                    pendingTransactions = [...pendingTransactions, tx];
-                    pendingTransactions = pendingTransactions.sort((a,b) => {
-                        if(a.id > b.id){
-                            return 1
-                        }else{
-                            return -1
+                    pendingTransactions.forEach(tx => {
+                        if(tx.state === "PENDING" && tx.id <= blockchain.lastTransactionId){
+                            tx.state = "VALIDATED";
                         }
                     })
                     setTransactions(pendingTransactions);
+                    const lastBlock = pendingBlocks.splice(0,1);
+                    lastBlock[0] = block;
+                    lastBlock[0].state = "CHAINED";
+                    pendingBlocks = [...lastBlock, ...pendingBlocks];
+                    setBlocks(pendingBlocks);
+                    setTransactions(pendingTransactions);
                     setBalance(wallet.getBalance(blockchain))
-                    console.log(pendingTransactions.map(tx => tx.id))
+                })
+                blockchain.events.on("tx", (tx) => {
+                    if(isConcernedByTransaction(wallet.publicKey, tx)){
+                        if(tx.isInBlock(blockchain)){
+                            tx.state = "VALIDATED";
+                        }else{
+                            tx.state = "PENDING";
+                        }
+                        pendingTransactions = [tx, ...pendingTransactions]
+                        pendingTransactions.sort((a, b) => {
+                            return a.id - b.id;
+                        })
+                        setTransactions(pendingTransactions);
+                    }
+                    setBalance(wallet.getBalance(blockchain))
+                })
+                blockchain.events.on("mining", (block) => {
+                    block.state = "MINING";
+                    pendingBlocks = [block, ...pendingBlocks]
+                    pendingBlocks.sort((a, b) => {
+                        return b.id - a.id;
+                    })
+                    setBlocks(pendingBlocks);
                 })
                 blockchain.events.on("initWallet", (localBalance) => {
                     setBalance(localBalance)
@@ -82,7 +97,7 @@ export default function App() {
                             <Nav/>
                             <Send/>
                             <Stats state={stats.state} lastblock={`bx${stats.lastBlockId}`} waitingTxns={stats.waitingTxns} nodes={stats.nodes} transactions={stats.transactions} supply={stats.supply} blockTime={stats.blockTime}/>
-                            <Blocks/>
+                            <Blocks blocks={blocks}/>
                         </div>
                         <div className="right">
                             <Profile username={userName} address={wallet.publicKey} balance={balance}/>

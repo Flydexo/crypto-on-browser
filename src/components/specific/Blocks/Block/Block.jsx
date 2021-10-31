@@ -3,6 +3,8 @@ import State from "../../State/State"
 import timeImg from "../../../../assets/time.png"
 import WaitingAnimation from '../../../basic/WaitingAnimation/WaitingAnimation';
 import "./Block.css"
+import Address from '../../../basic/Address/Address';
+import { getUsername } from '../../../../../blockchain';
 
 export default function Block({state, id, miner, transactionNumber, timestamp}) {
 
@@ -29,6 +31,7 @@ export default function Block({state, id, miner, transactionNumber, timestamp}) 
     }
     
     useEffect(() => {
+        console.log("miner", miner)
         if(state == "CHAINED"){
             interval = setInterval(() => {
                 setTime();
@@ -43,8 +46,8 @@ export default function Block({state, id, miner, transactionNumber, timestamp}) 
         <div className={`block ${state}`}>
             <State type={state} size="big"/>
             <div className="infos">
-                <p>{id}</p>
-                <p>miner: {miner}</p>
+                <p>bx{id}</p>
+                {state == "CHAINED" ? <p>miner: {getUsername(miner)}</p> : null}
                 <p>{transactionNumber} transactions</p>
                 {state == "CHAINED" ?
                     <div className="time">
