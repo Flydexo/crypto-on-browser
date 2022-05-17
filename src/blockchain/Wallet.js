@@ -17,16 +17,16 @@ export default class Wallet{
     getBalance(blockchain){
         let balance = 0;
         blockchain.chain.forEach(block => {
-            block.transactions.filter(tx => tx.from == this.publicKey || tx.to == this.publicKey).forEach(tx => {
-                if(tx.from == this.publicKey){
+            block.transactions.filter(tx => tx.from.trim() == this.publicKey || tx.to.trim() == this.publicKey).forEach(tx => {
+                if(tx.from.trim() == this.publicKey){
                     balance -= tx.amount;
-                }else if(tx.to == this.publicKey){
+                }else if(tx.to.trim() == this.publicKey){
                     balance += tx.amount;
                 }
             })
         })
-        blockchain.pendingTransactions.filter(tx => tx.from == this.publicKey || tx.to == this.publicKey).forEach(tx => {
-            if(tx.from == this.publicKey){
+        blockchain.pendingTransactions.filter(tx => tx.from.trim() == this.publicKey || tx.to.trim() == this.publicKey).forEach(tx => {
+            if(tx.from.trim() == this.publicKey){
                 balance -= tx.amount;
             }
         })

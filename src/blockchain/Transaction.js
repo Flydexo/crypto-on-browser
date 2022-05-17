@@ -34,18 +34,18 @@ module.exports = class Transaction{
             }
             let balance = 0;
             blockchain.chain.forEach(block => {
-                block.transactions.filter(tx => tx.from == this.from || tx.to == this.from).forEach(tx => {
-                    if(tx.from == this.from){
+                block.transactions.filter(tx => tx.from.trim() == this.from || tx.to.trim() == this.from).forEach(tx => {
+                    if(tx.from.trim() == this.from){
                         balance -= tx.amount;
-                    }else if(tx.to == this.from){
+                    }else if(tx.to.trim() == this.from){
                         balance += tx.amount;
                     }
                 })
             })
-            blockchain.pendingTransactions.filter(tx => tx.from == this.from || tx.to == this.from).forEach(tx => {
-                if(tx.from == this.from){
+            blockchain.pendingTransactions.filter(tx => tx.from.trim() == this.from || tx.to.trim() == this.from).forEach(tx => {
+                if(tx.from.trim() == this.from){
                     balance -= tx.amount;
-                }else if(tx.to == this.from){
+                }else if(tx.to.trim() == this.from){
                     balance += tx.amount;
                 }
             })
